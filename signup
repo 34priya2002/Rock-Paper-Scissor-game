@@ -1,125 +1,255 @@
-import "./App.css";
+import "../App.css";
 import React from "react";
 import Grid from "@mui/material/Grid2";
-import { Paper, TextField, Button, Typography, Link } from "@mui/material";
+import { Paper, TextField, Button, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import FormControl from "@mui/material/FormControl";
-import Divider from '@mui/material/Divider';
-import { FacebookIcon } from './customIcons';
-const SignUp = () => {
-  return (
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            "& > :not(style)": {
-              ml: 80,
-              mt: 20,
-              width: 600,
-              height: 120,
-              align: "center",
-            },
-          }}
-        >
-          <Grid>
-            <Paper elevation={10} style={paperStyle}>
-              <Grid align="center">
-                <h2>Sign In</h2>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid size={6}>
-                  <TextField
-                    label="First name"
-                    placeholder="Enter First name"
-                    fullWidth
-                    reqired
-                  />
-                </Grid>
-                <Grid size={6}>
-                  <TextField
-                    label="Last name"
-                    placeholder="Enter Last name"
-                    fullWidth
-                    reqired
-                  />
-                </Grid>
-                <Grid size={12}>
-                  <TextField
-                    label="Email address"
-                    placeholder="Email"
-                    type="email"
-                    fullWidth
-                    reqired
-                  />
-                </Grid>
-                <Grid size={12}>
-                  <FormControl variant="outlined" sx={{width:'520px'}}>
-                    <InputLabel htmlFor="outlined-adornment-password">
-                      Password
-                    </InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-password"
-                      type={showPassword ? "text" : "password"}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            onMouseUp={handleMouseUpPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                      label="Password"
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid size={12}>
-                <Link style={passwordStyle} href="#">Forgotten password?</Link>
-                </Grid>
-                <Button
-                sx={{width:'520px',height:'50px'}}
-                type="submit"
-                color="primary"
-                variant="contained"
-                fullwidth
-              >
-                Sign In
-              </Button>
-              </Grid>
-              <Grid >
-                <br/>
-               <Typography>Do you have an account?<Link href="#">Sign Up</Link></Typography>
-               </Grid>
-               <Grid>
-               <br/>
-               <Divider> <Typography sx={{ color: 'text.secondary' }}>or</Typography></Divider>
-               </Grid>
-               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-               <br/>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="outlined"
-                      onClick={() => alert('Sign up with Facebook')}
-                      startIcon={<FacebookIcon />}
-                    >
-                      Sign up with Facebook
-                    </Button>
-                  </Box>
-            </Paper>
-          </Grid>
-        </Box>
-  );
-}
+import Divider from "@mui/material/Divider";
+import { FacebookIcon } from "../Icons/customIcons";
+import { GoogleIcon } from "../Icons/customIcons";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default SignUp
+const SignUp = () => {
+  const paperStyle = {
+    padding: 20,
+    height: "65vh",
+    width: "500",
+    margin: "20px",
+    boxShadow: "10px 10px 15px grey",
+  };
+  const [firstname, setFirstName] = useState("");
+  const [firstnameError, setFirstNameError] = useState("");
+  const [lastname, setLastName] = useState("");
+  const [lastnameError, setLastNameError] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+  const handleFirstNameChange = (e) => {
+    setFirstName(e.target.value);
+    if (e.target.value.length < 3) {
+      setFirstNameError("Name must be at least 3 characters long");
+    } else if (e.target.value.length > 20) {
+      setFirstNameError("Name must be less than 20 characters long");
+    } else if (!/^[a-zA-Z ]+$/.test(e.target.value)) {
+      setFirstNameError("Name must contain only letters and spaces");
+    } else {
+      setFirstNameError(false);
+    }
+  };
+  const handleLastNameChange = (e) => {
+    setLastName(e.target.value);
+    if (e.target.value.length < 3) {
+      setLastNameError("Name must be at least 3 characters long");
+    } else if (e.target.value.length > 20) {
+      setLastNameError("Name must be less than 20 characters long");
+    } else if (!/^[a-zA-Z ]+$/.test(e.target.value)) {
+      setLastNameError("Name must contain only letters and spaces");
+    } else {
+      setLastNameError(false);
+    }
+  };
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (!/^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$/.test(e.target.value)) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError(false);
+    }
+  };
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (
+      firstnameError ||
+      emailError ||
+      lastnameError ||
+      password !== confirmPassword
+    ) {
+      alert("Form is invalid! Please check the fields...");
+    } else {
+      localStorage.setItem("email", email);
+      localStorage.setItem("password", password);
+      localStorage.setItem("firstname", firstname);
+      localStorage.setItem("lastname", lastname);
+      alert("Form is valid! Submitting the form...");
+      navigate("/");
+    }
+  };
+
+  return (
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      noValidate
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        "& > :not(style)": {
+          ml: 80,
+          mt: 20,
+          width: 600,
+          height: 150,
+          align: "center",
+        },
+      }}
+    >
+      <Grid>
+        <Paper elevation={10} style={paperStyle}>
+          <Grid align="center">
+            <Typography
+              variant="h4"
+              sx={{
+                padding: "10px 0px 20px 0px",
+                font: "32px Times New Roman",
+                fontWeight: "bold",
+                fontStyle: "italic",
+              }}
+            >
+              Sign Up
+            </Typography>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid size={6}>
+              <TextField
+                label="First name"
+                placeholder="Enter First name"
+                fullWidth
+                reqired
+                autoFocus
+                value={firstname}
+                onChange={handleFirstNameChange}
+                error={firstnameError}
+                helperText={firstnameError}
+              />
+            </Grid>
+            <Grid size={6}>
+              <TextField
+                label="Last name"
+                placeholder="Enter Last name"
+                fullWidth
+                reqired
+                value={lastname}
+                onChange={handleLastNameChange}
+                error={lastnameError}
+                helperText={lastnameError}
+              />
+            </Grid>
+            <Grid size={12}>
+              <TextField
+                label="Email address"
+                placeholder="Email"
+                type="email"
+                fullWidth
+                reqired
+                value={email}
+                onChange={handleEmailChange}
+                error={emailError}
+                helperText={emailError}
+              />
+            </Grid>
+            <Grid size={6}>
+              <TextField
+                label="Phone Number"
+                placeholder="Enter Phone Number"
+                fullWidth
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                reqired
+              />
+            </Grid>
+            <Grid size={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker label="Date of Birth" disableFuture={true} />
+              </LocalizationProvider>
+            </Grid>
+            <Grid size={6}>
+              <TextField
+                label="Password"
+                placeholder="Enter Password"
+                type="password"
+                fullWidth
+                value={password}
+                onChange={handlePasswordChange}
+                reqired
+              />
+            </Grid>
+            <Grid size={6}>
+              <TextField
+                label="Confirm Password"
+                type="password"
+                placeholder="Confirm Password"
+                fullWidth
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                reqired
+              />
+            </Grid>
+            <Button
+              sx={{ width: "520px", height: "50px" }}
+              type="submit"
+              color="primary"
+              variant="contained"
+              fullwidth
+            >
+              Sign Up
+            </Button>
+          </Grid>
+          <Grid sx={{ padding: "20px 0px 10px 0px" }}>
+            <Typography>
+              Already have an account?{""}
+              <RouterLink to="/"> Sign In</RouterLink>
+            </Typography>
+          </Grid>
+
+          <Grid sx={{ padding: "20px" }}>
+            <Divider>
+              <Typography sx={{ color: "text.secondary" }}>Or</Typography>
+            </Divider>
+          </Grid>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Grid
+              container
+              spacing={2}
+              display={"flex"}
+              justifyContent={"center"}
+            >
+              <Grid sx={6}>
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  onClick={() => alert("Sign in with Google")}
+                  startIcon={<GoogleIcon />}
+                >
+                  Google
+                </Button>
+              </Grid>
+              <Grid sx={6}>
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  onClick={() => alert("Sign up with Facebook")}
+                  startIcon={<FacebookIcon />}
+                >
+                  Facebook
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+      </Grid>
+    </Box>
+  );
+};
+
+export default SignUp;
