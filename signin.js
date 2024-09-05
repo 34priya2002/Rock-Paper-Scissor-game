@@ -6,6 +6,9 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import { FacebookIcon } from "../Icons/customIcons";
 import { GoogleIcon } from "../Icons/customIcons";
+import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 function SignIn() {
   const paperStyle = {
     padding: 20,
@@ -14,11 +17,37 @@ function SignIn() {
     margin: "20px",
     boxShadow: "10px 10px 15px grey",
   };
-  function  navigatMethod(){
-    fetch("https://www.google.com")
-}
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (
+      !/^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/.test(e.target.value)
+    ) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError(false);
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const storedEmail = localStorage.getItem("email");
+    const storedPassword = localStorage.getItem("password");
+    if (storedEmail && storedPassword) {
+      if (email === storedEmail && password === storedPassword) {
+        alert("Login successful!");
+        navigate("/dashboard", { state: { email: email } });
+        // redirect to dashboard
+      } else {
+        alert("Invalid email or password");
+      }
+    } else {
+      alert("No user data found");
+    }
+  };
   return (
-   
     <Box
       sx={{
         display: "flex",
@@ -31,94 +60,113 @@ function SignIn() {
           align: "center",
         },
       }}
+      component="form"
+      onSubmit={handleSubmit}
+      noValidate
     >
       <Grid>
         <Paper elevation={3} style={paperStyle}>
           <Grid align="center">
-            <h2>Sign In</h2>
-          </Grid>
-          <Grid container spacing={3}>
-            <Grid size={12}>
-              <TextField
-                label="Email address"
-                placeholder="Email"
-                type="email"
-                fullWidth
-                reqired
-              />
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                label="Password"
-                placeholder="Password"
-                type="password"
-                fullWidth
-                reqired
-              />
-            </Grid>
-          </Grid>
-          <Grid>
-            <Link
-              component="button"
-              variant="body2"
-              sx={{ display: "float", float: "right", padding: "15px" }}
-            >
-              Forgot your password?
-            </Link>
-          </Grid>
-          <Grid>
-            <Button
-              sx={{ width: "520px", height: "50px" }}
-              type="submit"
-              color="primary"
-              variant="contained"
-              fullwidth
+            <Typography
+              variant="h4"
+              sx={{
+                padding: "10px 0px 20px 0px",
+                font: "32px Times New Roman",
+                fontWeight: "bold",
+                fontStyle: "italic",
+              }}
             >
               Sign In
-            </Button>
-          </Grid>
-          <Grid>
-            <br />
-            <Typography>
-              Don't have an account?<Link  onClick={() => navigatMethod()} href="www.google.com" target="_blank"> Sign Up</Link>
             </Typography>
           </Grid>
-          <Grid>
-            <br />
-            <Divider>
-              <Typography sx={{ color: "text.secondary" }}>Or</Typography>
-            </Divider>
-            <br />
-          </Grid>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Grid
-              container
-              spacing={2}
-              display={"flex"}
-              justifyContent={"center"}
-            >
-              <Grid sx={6}>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  onClick={() => alert("Sign in with Google")}
-                  startIcon={<GoogleIcon />}
-                >
-                  Google
-                </Button>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid size={12}>
+                <TextField
+                  label="Email address"
+                  placeholder="Email"
+                  type="email"
+                  fullWidth
+                  reqired
+                  value={email}
+                  onChange={handleEmailChange}
+                  error={emailError}
+                  helperText={emailError}
+                />
               </Grid>
-              <Grid sx={6}>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  onClick={() => alert("Sign up with Facebook")}
-                  startIcon={<FacebookIcon />}
-                >
-                  Facebook
-                </Button>
+              <Grid size={12}>
+                <TextField
+                  label="Password"
+                  placeholder="Password"
+                  type="password"
+                  fullWidth
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </Grid>
             </Grid>
-          </Box>
+            <Grid>
+              <Link
+                component="button"
+                variant="body2"
+                sx={{ display: "float", float: "right", padding: "15px 0px" }}
+              >
+                Forgot your password?
+              </Link>
+            </Grid>
+            <Grid>
+              <Button
+                sx={{ width: "520px", height: "50px" }}
+                type="submit"
+                color="primary"
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Sign In
+              </Button>
+            </Grid>
+            <Grid sx={{ padding: "20px 0px" }}>
+              <Typography>
+                Don't have an account?{""}
+                <RouterLink to="/signUp"> Sign Up</RouterLink>
+              </Typography>
+            </Grid>
+            <Grid sx={{ padding: "0px 0px 20px" }}>
+              <Divider>
+                <Typography sx={{ color: "text.secondary" }}>Or</Typography>
+              </Divider>
+            </Grid>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Grid
+                container
+                spacing={2}
+                display={"flex"}
+                justifyContent={"center"}
+              >
+                <Grid sx={6}>
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    onClick={() => alert("Sign in with Google")}
+                    startIcon={<GoogleIcon />}
+                  >
+                    Google
+                  </Button>
+                </Grid>
+                <Grid sx={6}>
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    onClick={() => alert("Sign up with Facebook")}
+                    startIcon={<FacebookIcon />}
+                  >
+                    Facebook
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </form>
         </Paper>
       </Grid>
     </Box>
