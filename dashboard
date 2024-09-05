@@ -1,0 +1,23 @@
+import { Typography } from "@mui/material";
+import React from "react";
+import { useLocation } from "react-router-dom";
+import Grid from "@mui/material/Grid2";
+function Dashboard() {
+  const location = useLocation();
+  const email = location.state?.email;
+  const name = email.split("@")[0];
+  const style = {
+    font: "32px Times New Roman",
+    fontWeight: "bold",
+    fontStyle: "italic",
+  };
+  return (
+    <Grid align="center" marginTop={50}>
+      <Typography variant="h3" sx={{ ...style }}>
+        Welcome, {name}!
+      </Typography>
+    </Grid>
+  );
+}
+
+export default Dashboard;
